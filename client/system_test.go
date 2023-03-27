@@ -15,8 +15,9 @@ var (
 	awxHostname string
 	awxUsername string
 	awxPassword string
+	awxToken    string
 
-	awxClient *AWX
+	awxClient AWX
 
 	credentialsServiceTestTable = []*TestRow{{
 		data: map[string]interface{}{
@@ -26,7 +27,7 @@ var (
 				"password": "badpassword",
 			},
 			"name":         "credential_01",
-			"organization": 1,
+			"organization": 71,
 		},
 		params: map[string]string{},
 	},
@@ -38,20 +39,22 @@ func TestMain(m *testing.M) {
 	awxHostname = os.Getenv("GOAWX_HOSTNAME")
 	awxUsername = os.Getenv("GOAWX_USERNAME")
 	awxPassword = os.Getenv("GOAWX_PASSWORD")
+	awxToken = os.Getenv("GOAWX_TOKEN")
 
 	if awxHostname == "" {
 		log.Fatal("no AWX hostname provided")
 	}
 
-	if awxUsername == "" {
-		log.Fatal("no AWX username provided")
+	if (awxUsername == "" || awxPassword == "") && awxToken == "" {
+		log.Fatal("no Authentication provided")
 	}
 
-	if awxPassword == "" {
-		log.Fatal("no AWX password provided")
-	}
+	if awxToken != "" {
+		awxClient, err = NewAWXToken(awxHostname, awxToken, nil)
 
-	awxClient, err = NewAWX(awxHostname, awxUsername, awxPassword, nil)
+	} else {
+		awxClient, err = NewAWX(awxHostname, awxUsername, awxPassword, nil)
+	}
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +68,7 @@ func TestCredentialsService(t *testing.T) {
 	for _, tt := range credentialsServiceTestTable {
 		t.Run("Create", func(t *testing.T) {
 			var err error
-			createResponse, err = awxClient.CredentialsService.CreateCredentials(tt.data, tt.params)
+			createResponse, err = awxClient.CreateCredentials(tt.data, tt.params)
 			if err != nil {
 				t.Error(err)
 			}
@@ -76,7 +79,7 @@ func TestCredentialsService(t *testing.T) {
 		})
 
 		t.Run("Fetch", func(t *testing.T) {
-			fetchResponse, err := awxClient.CredentialsService.GetCredentialsByID(createResponse.ID, map[string]string{})
+			fetchResponse, err := awxClient.GetCredentialsByID(createResponse.ID, map[string]string{})
 			if err != nil {
 				t.Error(err)
 			}
@@ -89,7 +92,7 @@ func TestCredentialsService(t *testing.T) {
 		t.Run("Update", func(t *testing.T) {
 			tt.data["name"] = "credential_x"
 
-			updateResponse, err := awxClient.CredentialsService.UpdateCredentialsByID(createResponse.ID, tt.data,
+			updateResponse, err := awxClient.UpdateCredentialsByID(createResponse.ID, tt.data,
 				map[string]string{})
 			if err != nil {
 				t.Error(err)
@@ -101,7 +104,7 @@ func TestCredentialsService(t *testing.T) {
 		})
 
 		t.Run("Delete", func(t *testing.T) {
-			err := awxClient.CredentialsService.DeleteCredentialsByID(createResponse.ID,
+			err := awxClient.DeleteCredentialsByID(createResponse.ID,
 				map[string]string{})
 			if err != nil {
 				t.Error(err)
