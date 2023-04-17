@@ -1,53 +1,70 @@
-# template-opensource
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+# goawx
+
+[![All Contributors](https://img.shields.io/github/all-contributors/adeo-opensource/goawx?style=flat&label=Contributors&color=informational)](#contributors)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adeo-opensource_goawx&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=adeo-opensource_goawx)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adeo-opensource_goawx&metric=coverage)](https://sonarcloud.io/summary/new_code?id=adeo-opensource_goawx)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=adeo-opensource_goawx&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=adeo-opensource_goawx)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=adeo-opensource_goawx&metric=bugs)](https://sonarcloud.io/summary/new_code?id=adeo-opensource_goawx)
 
 ## Description
 
-## Prerequisite
+Go library for AWX (Ansible Tower/Ansible Automation Platform) manager. 
+Used in particular by the [terraform-provider-awx][terraform-provider-awx] project.
 
-## Getting Started
+## Roadmap
 
-## Documentation
+[Resources managed by this library](ROADMAP.md)
 
-## Built Using
+## AWX authentication configuration options
 
-* [Techno1](https://www.leroymerlin.fr/)
-* [Techno2](https://www.leroymerlin.fr/)
-* [Techno3](https://www.leroymerlin.fr/)
+You must have these values in your possession to use this library:
 
-## How to contribute? 
+* url
+* username/password or token
 
-## Ecosystem
+## Usage
 
-## Changelog 
+```go
+go get -u github.com/adeo-opensource/goawx
+```
 
-[Learn about the latest improvements](changelog)
+In the directory [examples](./examples) you can find examples of use
 
-## Stay in touch
+## How to contribute?
 
-* [Slack](https://www.leroymerlin.fr/)
-* [Discord](https://www.leroymerlin.fr/)
-* [Twitter](https://www.leroymerlin.fr/)
+[Learn about how to contribute](CONTRIBUTING.md)
+
+## Where to ask Questions?
+
+Questions can be asked in form of issues in this repository:
+[Open an issue][open-issue]
+
+## Changelog
+
+[Learn about the latest improvements](CHANGELOG.md)
+
 ## License
+
+Project is under Apache 2.0 license. See [License](LICENSE) file for more information.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful people ([emoji key][all-contributors-emoji-url]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="http://gillespie59.github.io/"><img src="https://avatars.githubusercontent.com/u/555768?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emmanuel DEMEY</b></sub></a><br /><a href="https://github.com/adeo-opensource/template-opensource/commits?author=EmmanuelDemey" title="Code">💻</a></td>
-  </tr>
-</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors][all-contributors-url] specification.  
+Contributions of any kind welcome!
+
+
+[all-contributors-url]: https://github.com/all-contributors/all-contributors
+[all-contributors-emoji-url]: https://allcontributors.org/docs/en/emoji-key
+[open-issue]: https://github.com/adeo-opensource/terraform-provider-awx/issues/new/choose
+[terraform-provider-awx]: https://github.com/adeo-opensource/terraform-provider-awx

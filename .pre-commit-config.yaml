@@ -11,4 +11,4 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline', '--exclude-files', 'examples/k8s/base/files/id_rsa']
+        args: ['--baseline', '.secrets.baseline']
