@@ -77,7 +77,7 @@ func ValidateParams(data map[string]interface{}, mandatoryFields []string) (notf
 // NewAWX news an awx handler with basic auth support, you could customize the http
 // transport by passing custom client.
 func NewAWX(baseURL, userName, passwd string, client *http.Client) (AWX, error) {
-	r := &Requester{Base: baseURL, Authenticator: &BasicAuth{Username: userName, Password: passwd}, Client: client}
+	r := &Requester{Base: baseURL, Authenticator: &BasicAuth{Username: userName, Password: passwd}, Client: client} // pragma: allowlist secret
 	if r.Client == nil {
 		r.Client = http.DefaultClient
 	}

@@ -22,7 +22,7 @@ result, err := client.CredentialsService.CreateCredentials(map[string]interface{
         "credential_type": 5, // AWS Credential
         "inputs": map[string]interface{}{
             "username": "badusername",
-            "password": "badpassword",
+            "password": "badpassword",  // pragma: allowlist secret
         },
         "name":         "my_aws_creds",
         "organization": 1, // Default organisation
@@ -51,7 +51,7 @@ log.Println("Obtained Credentials: ", result)
 result, err := client.CredentialsService.UpdateCredentialsByID(1, map[string]interface{}{
         "inputs": map[string]interface{}{
             "username": "badusername",
-            "password": "MUCH_BETTER_P4SS0WRD_RIGHT?",
+            "password": "MUCH_BETTER_P4SS0WRD_RIGHT?",  // pragma: allowlist secret
         },
     }, map[string]string{})
 if err != nil {
