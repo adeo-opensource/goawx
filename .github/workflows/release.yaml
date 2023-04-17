@@ -25,7 +25,7 @@ jobs:
         id: release
         uses: cycjimmy/semantic-release-action@5982a02995853159735cb838992248c4f0f16166 # v2
         with:
-          semantic_version: 17.4.7
+          semantic_version: 19.0.5
           branches: |
             [
               'main'
