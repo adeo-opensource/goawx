@@ -24,7 +24,7 @@ var (
 			"credential_type": 5,
 			"inputs": map[string]interface{}{
 				"username": "badusername",
-				"password": "badpassword",
+				"password": "badpassword", // pragma: allowlist secret
 			},
 			"name":         "credential_01",
 			"organization": 71,
