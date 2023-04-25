@@ -9,9 +9,7 @@ import (
 
 type AuthenticatorMock struct{}
 
-func (am *AuthenticatorMock) addAuthenticationHeaders(*http.Request) {
-	return
-}
+func (am *AuthenticatorMock) addAuthenticationHeaders(*http.Request) {}
 
 func Test_awx_GetApplicationByID(t *testing.T) {
 	srv := GetServer(200, map[string]interface{}{

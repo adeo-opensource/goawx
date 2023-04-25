@@ -113,7 +113,10 @@ func (r *Requester) Do(ar *APIRequest, responseStruct interface{}, options ...in
 		var errorString string
 
 		errorList := map[string][]string{}
-		json.NewDecoder(response.Body).Decode(&errorList)
+		err := json.NewDecoder(response.Body).Decode(&errorList)
+		if err != nil {
+			return nil, err
+		}
 
 		errorString = "Errors:"
 		for k, v := range errorList {
@@ -152,7 +155,10 @@ func (r *Requester) ReadRawResponse(response *http.Response, responseStruct inte
 func (r *Requester) ReadJSONResponse(response *http.Response, responseStruct interface{}) (*http.Response, error) {
 	defer response.Body.Close()
 
-	json.NewDecoder(response.Body).Decode(responseStruct)
+	err := json.NewDecoder(response.Body).Decode(responseStruct)
+	if err != nil {
+		return nil, err
+	}
 	return response, nil
 }
 
