@@ -155,6 +155,10 @@ func (r *Requester) ReadRawResponse(response *http.Response, responseStruct inte
 func (r *Requester) ReadJSONResponse(response *http.Response, responseStruct interface{}) (*http.Response, error) {
 	defer response.Body.Close()
 
+	if response.StatusCode == 204 {
+		return response, nil
+	}
+
 	err := json.NewDecoder(response.Body).Decode(responseStruct)
 	if err != nil {
 		return nil, err
