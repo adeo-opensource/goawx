@@ -11,8 +11,14 @@ func GetServer(returnCode int, obj map[string]interface{}) *httptest.Server {
 	if err != nil {
 		return nil
 	}
-	return httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+
+	handler := func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(returnCode)
-		res.Write(b)
-	}))
+		_, err := res.Write(b)
+		if err != nil {
+			return
+		}
+	}
+
+	return httptest.NewServer(http.HandlerFunc(handler))
 }
