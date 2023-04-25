@@ -29,11 +29,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Run golangci-linter
-        uses: Mushus/golangci-linter@v1
-        with:
-          config: .golangci.yml
-
       - name: Run go build
         run:
           go build ./client
+
+      - name: Test
+        run: go test -json -coverprofile=cover.out ./... > result.json
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

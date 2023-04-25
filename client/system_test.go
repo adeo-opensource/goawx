@@ -1,8 +1,6 @@
 package awx
 
 import (
-	"log"
-	"os"
 	"testing"
 )
 
@@ -33,34 +31,6 @@ var (
 	},
 	}
 )
-
-func TestMain(m *testing.M) {
-	var err error
-	awxHostname = os.Getenv("GOAWX_HOSTNAME")
-	awxUsername = os.Getenv("GOAWX_USERNAME")
-	awxPassword = os.Getenv("GOAWX_PASSWORD")
-	awxToken = os.Getenv("GOAWX_TOKEN")
-
-	if awxHostname == "" {
-		log.Fatal("no AWX hostname provided")
-	}
-
-	if (awxUsername == "" || awxPassword == "") && awxToken == "" {
-		log.Fatal("no Authentication provided")
-	}
-
-	if awxToken != "" {
-		awxClient, err = NewAWXToken(awxHostname, awxToken, nil)
-
-	} else {
-		awxClient, err = NewAWX(awxHostname, awxUsername, awxPassword, nil)
-	}
-	if err != nil {
-		panic(err)
-	}
-
-	os.Exit(m.Run())
-}
 
 func TestCredentialsService(t *testing.T) {
 	var createResponse *Credential

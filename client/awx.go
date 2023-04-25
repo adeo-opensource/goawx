@@ -51,7 +51,7 @@ type Client struct {
 	Requester *Requester
 }
 
-// CheckResponse do http response check, and return err if not in [200, 300).
+// CheckResponse do http response check, and return err if not in [200, 300]).
 func CheckResponse(resp *http.Response) error {
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		return nil
