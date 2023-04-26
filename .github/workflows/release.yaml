@@ -23,7 +23,7 @@ jobs:
 
       - name: Release
         id: release
-        uses: cycjimmy/semantic-release-action@5982a02995853159735cb838992248c4f0f16166 # v2
+        uses: cycjimmy/semantic-release-action@8e58d20d0f6c8773181f43eb74d6a05e3099571d # v2
         with:
           semantic_version: 19.0.5
           branches: |
