@@ -1,17 +1,42 @@
-## Overview
+# How to develop
 
-[Architecture and technology overview, description of packages, dependencies, tools are used]
+## Build locally the library
 
-## Basic requirements
+### Needed
 
-[pre installed software is needed for development]
+* Go 1.14
+* Python 3
+* [pre-commit](https://pre-commit.com/#install)
 
-## Getting started
+### Prerequisites
 
-[How to setup environment]
+* Install pre-commit
 
-## Conventions
+```shell
+pre-commit install
+```
 
-This project is following [[Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) - for example]
+[//]: # (### Run tests and ensure they're all passing)
 
-[Requirements for test coverage, linters, additional project rules]
+[//]: # ()
+[//]: # (```shell)
+
+[//]: # (go test ./test -count=1)
+
+[//]: # (```)
+
+### Push your code in the repo
+
+```shell
+git add .
+git commit -m "feat: my new feature"
+git push
+```
+
+### Test it in your code
+
+```shell
+go get github.com/adeo-opensource/goawx@my-branch-feature
+
+go mod vendor
+```
