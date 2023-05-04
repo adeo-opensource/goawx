@@ -27,7 +27,7 @@ jobs:
           go build ./client
 
       - name: Test
-        run: go test -json -coverprofile=cover.out ./... > result.json
+        run: go test -v -json -coverprofile=cover.out ./... > result.json
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
