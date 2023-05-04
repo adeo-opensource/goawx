@@ -23,7 +23,7 @@ jobs:
 
       - name: Release
         id: release
-        uses: cycjimmy/semantic-release-action@5982a02995853159735cb838992248c4f0f16166 # v2
+        uses: cycjimmy/semantic-release-action@v3
         with:
           semantic_version: 19.0.5
           branches: |
@@ -31,11 +31,10 @@ jobs:
               'main'
             ]
           extra_plugins: |
-            @semantic-release/commit-analyzer@8.0.1
-            @semantic-release/release-notes-generator@9.0.3
-            @semantic-release/changelog@5.0.1
-            @semantic-release/git@9.0.1
-            @semantic-release/github@7.2.3
+            @semantic-release/commit-analyzer@9.0.2
+            @semantic-release/release-notes-generator@10.0.3
+            @semantic-release/changelog@6.0.3
+            @semantic-release/git@10.0.1
+            @semantic-release/github@8.0.7
         env:
-          GIT_CREDENTIALS: git:${{ secrets.PAT }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
