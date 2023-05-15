@@ -8,13 +8,18 @@ import (
 
 // UserService implements awx Users apis.
 type UserService interface {
-	ListUsers(params map[string]string) ([]*User, *ListUsersResponse, error)
-	CreateUser(data map[string]interface{}, params map[string]string) (*User, error)
-	UpdateUser(id int, data map[string]interface{}, params map[string]string) (*User, error)
-	DeleteUser(id int) (*User, error)
-	GetUserByID(id int, params map[string]string) (*User, error)
+	List(params map[string]string) ([]*User, *ResultsList[User], error)
+	GetByID(id int, params map[string]string) (*User, error)
+	Create(data map[string]interface{}, params map[string]string) (*User, error)
+	Update(id int, data map[string]interface{}, params map[string]string) (*User, error)
+	Delete(id int) (*User, error)
 	ListUserRoleEntitlements(id int, params map[string]string) ([]*ApplyRole, *ListUsersEntitlementsResponse, error)
 	UpdateUserRoleEntitlement(id int, data map[string]interface{}, params map[string]string) (interface{}, error)
+}
+
+type userServiceHTTP struct {
+	AWXResourceService[User]
+	client *Client
 }
 
 // ListUsersResponse represents `ListUsers` endpoint response.
@@ -30,107 +35,7 @@ type ListUsersEntitlementsResponse struct {
 
 const usersAPIEndpoint = "/api/v2/users/"
 
-// ListUsers shows list of awx Users.
-func (u *awx) ListUsers(params map[string]string) ([]*User, *ListUsersResponse, error) {
-	result := new(ListUsersResponse)
-	resp, err := u.client.Requester.GetJSON(usersAPIEndpoint, result, params)
-	if err != nil {
-		return nil, result, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, result, err
-	}
-
-	return result.Results, result, nil
-}
-
-// CreateUser creates an awx User.
-func (u *awx) CreateUser(data map[string]interface{}, params map[string]string) (*User, error) {
-	mandatoryFields = []string{"username", "password", "first_name", "last_name", "email"}
-	validate, status := ValidateParams(data, mandatoryFields)
-
-	if !status {
-		err := fmt.Errorf("Mandatory input arguments are absent: %s", validate)
-		return nil, err
-	}
-
-	result := new(User)
-	payload, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add check if User exists and return proper error
-
-	resp, err := u.client.Requester.PostJSON(usersAPIEndpoint, bytes.NewReader(payload), result, params)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// UpdateUser update an awx user.
-func (u *awx) UpdateUser(id int, data map[string]interface{}, params map[string]string) (*User, error) {
-	result := new(User)
-	endpoint := fmt.Sprintf("%s%d", usersAPIEndpoint, id)
-	payload, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := u.client.Requester.PutJSON(endpoint, bytes.NewReader(payload), result, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// DeleteUser delete an awx User.
-func (u *awx) DeleteUser(id int) (*User, error) {
-	result := new(User)
-	endpoint := fmt.Sprintf("%s%d", usersAPIEndpoint, id)
-
-	resp, err := u.client.Requester.Delete(endpoint, result, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// GetUser read an awx User.
-func (u *awx) GetUserByID(id int, params map[string]string) (*User, error) {
-	result := new(User)
-	endpoint := fmt.Sprintf("%s%d", usersAPIEndpoint, id)
-	resp, err := u.client.Requester.GetJSON(endpoint, result, params)
-	if err != nil {
-		return nil, err
-	}
-
-	err = CheckResponse(resp)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-func (u *awx) ListUserRoleEntitlements(id int, params map[string]string) ([]*ApplyRole, *ListUsersEntitlementsResponse, error) {
+func (u *userServiceHTTP) ListUserRoleEntitlements(id int, params map[string]string) ([]*ApplyRole, *ListUsersEntitlementsResponse, error) {
 	result := new(ListUsersEntitlementsResponse)
 	endpoint := fmt.Sprintf("%s%d/roles/", usersAPIEndpoint, id)
 	resp, err := u.client.Requester.GetJSON(endpoint, result, params)
@@ -144,7 +49,7 @@ func (u *awx) ListUserRoleEntitlements(id int, params map[string]string) ([]*App
 	return result.Results, result, nil
 }
 
-func (u *awx) UpdateUserRoleEntitlement(id int, data map[string]interface{}, params map[string]string) (interface{}, error) {
+func (u *userServiceHTTP) UpdateUserRoleEntitlement(id int, data map[string]interface{}, params map[string]string) (interface{}, error) {
 	result := new(interface{})
 	endpoint := fmt.Sprintf("%s%d/roles/", usersAPIEndpoint, id)
 	payload, err := json.Marshal(data)

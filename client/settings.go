@@ -14,6 +14,10 @@ type SettingService interface {
 	DeleteSettings(slug string) (*Setting, error)
 }
 
+type settingServiceHTTP struct {
+	client *Client
+}
+
 // ListSettingsResponse represents `ListSettings` endpoint response.
 type ListSettingsResponse struct {
 	Pagination
@@ -23,7 +27,7 @@ type ListSettingsResponse struct {
 const settingsAPIEndpoint = "/api/v2/settings/"
 
 // ListSettings shows list of awx settings.
-func (p *awx) ListSettings(params map[string]string) ([]*SettingSummary, *ListSettingsResponse, error) {
+func (p *settingServiceHTTP) ListSettings(params map[string]string) ([]*SettingSummary, *ListSettingsResponse, error) {
 	result := new(ListSettingsResponse)
 	resp, err := p.client.Requester.GetJSON(settingsAPIEndpoint, result, params)
 	if err != nil {
@@ -38,7 +42,7 @@ func (p *awx) ListSettings(params map[string]string) ([]*SettingSummary, *ListSe
 }
 
 // GetSettingById shows the details of a setting.
-func (p *awx) GetSettingsBySlug(slug string, params map[string]string) (*Setting, error) {
+func (p *settingServiceHTTP) GetSettingsBySlug(slug string, params map[string]string) (*Setting, error) {
 	result := new(Setting)
 	endpoint := fmt.Sprintf("%s%s/", settingsAPIEndpoint, slug)
 	resp, err := p.client.Requester.GetJSON(endpoint, result, params)
@@ -54,7 +58,7 @@ func (p *awx) GetSettingsBySlug(slug string, params map[string]string) (*Setting
 }
 
 // UpdateSetting update an awx Setting.
-func (p *awx) UpdateSettings(slug string, data map[string]interface{}, params map[string]string) (*Setting, error) {
+func (p *settingServiceHTTP) UpdateSettings(slug string, data map[string]interface{}, params map[string]string) (*Setting, error) {
 	result := new(Setting)
 	endpoint := fmt.Sprintf("%s%s", settingsAPIEndpoint, slug)
 	payload, err := json.Marshal(data)
@@ -74,7 +78,7 @@ func (p *awx) UpdateSettings(slug string, data map[string]interface{}, params ma
 }
 
 // DeleteSetting delete an awx Setting.
-func (p *awx) DeleteSettings(slug string) (*Setting, error) {
+func (p *settingServiceHTTP) DeleteSettings(slug string) (*Setting, error) {
 	result := new(Setting)
 	endpoint := fmt.Sprintf("%s%s", settingsAPIEndpoint, slug)
 

@@ -27,6 +27,10 @@ type JobService interface {
 	GetJobEvents(id int, params map[string]string) ([]JobEvent, *JobEventsResponse, error)
 }
 
+type jobServiceHTTP struct {
+	client *Client
+}
+
 // HostSummariesResponse represents `JobHostSummaries` endpoint response.
 type HostSummariesResponse struct {
 	Pagination
@@ -47,7 +51,7 @@ type CancelJobResponse struct {
 const jobAPIEndpoint = "/api/v2/jobs/"
 
 // GetJob shows the details of a job.
-func (j *awx) GetJob(id int, params map[string]string) (*Job, error) {
+func (j *jobServiceHTTP) GetJob(id int, params map[string]string) (*Job, error) {
 	result := new(Job)
 	endpoint := fmt.Sprintf("%s%d/", jobAPIEndpoint, id)
 	resp, err := j.client.Requester.GetJSON(endpoint, result, params)
@@ -63,7 +67,7 @@ func (j *awx) GetJob(id int, params map[string]string) (*Job, error) {
 }
 
 // CancelJob cancels a job.
-func (j *awx) CancelJob(id int, data map[string]interface{}, params map[string]string) (*CancelJobResponse, error) {
+func (j *jobServiceHTTP) CancelJob(id int, data map[string]interface{}, params map[string]string) (*CancelJobResponse, error) {
 	result := new(CancelJobResponse)
 	endpoint := fmt.Sprintf("%s%d/cancel/", jobAPIEndpoint, id)
 	payload, err := json.Marshal(data)
@@ -84,7 +88,7 @@ func (j *awx) CancelJob(id int, data map[string]interface{}, params map[string]s
 }
 
 // RelaunchJob relaunch a job.
-func (j *awx) RelaunchJob(id int, data map[string]interface{}, params map[string]string) (*JobLaunch, error) {
+func (j *jobServiceHTTP) RelaunchJob(id int, data map[string]interface{}, params map[string]string) (*JobLaunch, error) {
 	result := new(JobLaunch)
 	endpoint := fmt.Sprintf("%s%d/relaunch/", jobAPIEndpoint, id)
 	payload, err := json.Marshal(data)
@@ -105,7 +109,7 @@ func (j *awx) RelaunchJob(id int, data map[string]interface{}, params map[string
 }
 
 // GetHostSummaries get a job hosts summaries.
-func (j *awx) GetHostSummaries(id int, params map[string]string) ([]HostSummary, *HostSummariesResponse, error) {
+func (j *jobServiceHTTP) GetHostSummaries(id int, params map[string]string) ([]HostSummary, *HostSummariesResponse, error) {
 	result := new(HostSummariesResponse)
 	endpoint := fmt.Sprintf("%s%d/job_host_summaries/", jobAPIEndpoint, id)
 	resp, err := j.client.Requester.GetJSON(endpoint, result, params)
@@ -121,7 +125,7 @@ func (j *awx) GetHostSummaries(id int, params map[string]string) ([]HostSummary,
 }
 
 // GetJobEvents get a list of job events.
-func (j *awx) GetJobEvents(id int, params map[string]string) ([]JobEvent, *JobEventsResponse, error) {
+func (j *jobServiceHTTP) GetJobEvents(id int, params map[string]string) ([]JobEvent, *JobEventsResponse, error) {
 	result := new(JobEventsResponse)
 	endpoint := fmt.Sprintf("%s%d/job_events/", jobAPIEndpoint, id)
 	resp, err := j.client.Requester.GetJSON(endpoint, result, params)

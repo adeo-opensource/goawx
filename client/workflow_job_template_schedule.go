@@ -14,8 +14,12 @@ type WorkflowJobTemplateScheduleService interface {
 	CreateWorkflowJobTemplateSchedule(id int, data map[string]interface{}, params map[string]string) (*Schedule, error)
 }
 
+type workflowJobTemplateScheduleServiceHTTP struct {
+	client *Client
+}
+
 // ListWorkflowJobTemplateSchedules shows a list of schedules for a given workflow_job_template
-func (jt *awx) ListWorkflowJobTemplateSchedules(id int, params map[string]string) ([]*Schedule, *ListSchedulesResponse, error) {
+func (jt *workflowJobTemplateScheduleServiceHTTP) ListWorkflowJobTemplateSchedules(id int, params map[string]string) ([]*Schedule, *ListSchedulesResponse, error) {
 	result := new(ListSchedulesResponse)
 	resp, err := jt.client.Requester.GetJSON(
 		fmt.Sprintf(workflowJobTemplateSchedulesAPIEndpoint, id),
@@ -32,8 +36,8 @@ func (jt *awx) ListWorkflowJobTemplateSchedules(id int, params map[string]string
 }
 
 // CreateWorkflowJobTemplateSchedule will create a schedule for an existing workflow_job_template
-func (jt *awx) CreateWorkflowJobTemplateSchedule(id int, data map[string]interface{}, params map[string]string) (*Schedule, error) {
-	mandatoryFields = []string{"name", "rrule"}
+func (jt *workflowJobTemplateScheduleServiceHTTP) CreateWorkflowJobTemplateSchedule(id int, data map[string]interface{}, params map[string]string) (*Schedule, error) {
+	mandatoryFields := []string{"name", "rrule"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("mandatory input arguments are absent: %s", validate)
