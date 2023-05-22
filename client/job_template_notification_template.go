@@ -9,7 +9,7 @@ import (
 const jobTemplateNotificationTemplatesAPIEndpoint = "/api/v2/job_templates/%d/notification_templates_%s/"
 
 // JobTemplateNotificationTemplatesService implements awx job template nodes apis.
-type JobTemplateNotificationTemplatesService interface {
+type JobTemplateNotificationTemplateService interface {
 	AssociateJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 	AssociateJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 	AssociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
@@ -18,13 +18,17 @@ type JobTemplateNotificationTemplatesService interface {
 	DisassociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 }
 
-func (jt *awx) associateJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
+type jobTemplateNotificationTemplateServiceHTTP struct {
+	client *Client
+}
+
+func (jt *jobTemplateNotificationTemplateServiceHTTP) associateJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
 	result := new(NotificationTemplate)
 
 	data := map[string]interface{}{
 		"id": notificationTemplateID,
 	}
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("mandatory input arguments are absent: %s", validate)
@@ -50,28 +54,28 @@ func (jt *awx) associateJobTemplateNotificationTemplatesForType(jobTemplateID in
 }
 
 // AssociateJobTemplateNotificationTemplatesError will associate an error notification_template for a job_template
-func (jt *awx) AssociateJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) AssociateJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.associateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "error")
 }
 
 // AssociateJobTemplateNotificationTemplatesSuccess will associate a success notification_template for a job_template
-func (jt *awx) AssociateJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) AssociateJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.associateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "success")
 }
 
 // AssociateJobTemplateNotificationTemplatesStarted will associate a started notification_template for a job_template
-func (jt *awx) AssociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) AssociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.associateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "started")
 }
 
-func (jt *awx) disassociateJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) disassociateJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
 	result := new(NotificationTemplate)
 
 	data := map[string]interface{}{
 		"id":           notificationTemplateID,
 		"disassociate": true,
 	}
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("mandatory input arguments are absent: %s", validate)
@@ -97,16 +101,16 @@ func (jt *awx) disassociateJobTemplateNotificationTemplatesForType(jobTemplateID
 }
 
 // DisassociateJobTemplateNotificationTemplatesError will disassociate an error notification_template for a job_template
-func (jt *awx) DisassociateJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) DisassociateJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.disassociateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "error")
 }
 
 // DisassociateJobTemplateNotificationTemplatesSuccess will disassociate a success notification_template for a job_template
-func (jt *awx) DisassociateJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) DisassociateJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.disassociateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "success")
 }
 
 // DisassociateJobTemplateNotificationTemplatesStarted will disassociate a started notification_template for a job_template
-func (jt *awx) DisassociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (jt *jobTemplateNotificationTemplateServiceHTTP) DisassociateJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return jt.disassociateJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "started")
 }

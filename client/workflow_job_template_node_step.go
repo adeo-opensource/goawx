@@ -17,32 +17,36 @@ type WorkflowJobTemplateNodeStepService interface {
 	CreateWorkflowJobTemplateAlwaysNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error)
 }
 
-func (jt *awx) ListWorkflowJobTemplateSuccessNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
+type workflowJobTemplateNodeStepServiceHTTP struct {
+	client *Client
+}
+
+func (jt *workflowJobTemplateNodeStepServiceHTTP) ListWorkflowJobTemplateSuccessNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
 	return jt.listWorkflowJobTemplateNodeSteps(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/success_nodes/"), params)
 }
-func (jt *awx) CreateWorkflowJobTemplateSuccessNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) CreateWorkflowJobTemplateSuccessNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
 	return jt.createWorkflowJobTemplateNodeStep(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/success_nodes/"), data, params)
 
 }
-func (jt *awx) ListWorkflowJobTemplateFailureNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) ListWorkflowJobTemplateFailureNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
 	return jt.listWorkflowJobTemplateNodeSteps(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/failure_nodes/"), params)
 
 }
-func (jt *awx) CreateWorkflowJobTemplateFailureNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) CreateWorkflowJobTemplateFailureNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
 	return jt.createWorkflowJobTemplateNodeStep(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/failure_nodes/"), data, params)
 
 }
-func (jt *awx) ListWorkflowJobTemplateAlwaysNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) ListWorkflowJobTemplateAlwaysNodeSteps(id int, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
 	return jt.listWorkflowJobTemplateNodeSteps(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/always_nodes/"), params)
 
 }
-func (jt *awx) CreateWorkflowJobTemplateAlwaysNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) CreateWorkflowJobTemplateAlwaysNodeStep(id int, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
 	return jt.createWorkflowJobTemplateNodeStep(id, fmt.Sprintf("%s%s", workflowJobTemplateNodeAPIEndpoint, "%d/always_nodes/"), data, params)
 
 }
 
 // ListWorkflowJobTemplateNodeSteps shows a list of job templates nodes.
-func (jt *awx) listWorkflowJobTemplateNodeSteps(id int, endpoint string, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
+func (jt *workflowJobTemplateNodeStepServiceHTTP) listWorkflowJobTemplateNodeSteps(id int, endpoint string, params map[string]string) ([]*WorkflowJobTemplateNode, *ListWorkflowJobTemplateNodesResponse, error) {
 	workflowJobTemplateNodesActionEndpoint := fmt.Sprintf(endpoint, id)
 	return fetchWorkflowJobTemplateNode(jt.client, params, workflowJobTemplateNodesActionEndpoint)
 }
@@ -63,7 +67,7 @@ func fetchWorkflowJobTemplateNode(client *Client, params map[string]string, work
 
 func createWorkflowJobTemplateNode(client *Client, data map[string]interface{}, params map[string]string, workflowJobTemplateNodesActionEndpoint string) (*WorkflowJobTemplateNode, error) {
 	result := new(WorkflowJobTemplateNode)
-	mandatoryFields = []string{"unified_job_template", "identifier"}
+	mandatoryFields := []string{"unified_job_template", "identifier"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("Mandatory input arguments are absent: %s", validate)
@@ -84,8 +88,8 @@ func createWorkflowJobTemplateNode(client *Client, data map[string]interface{}, 
 	return result, nil
 }
 
-// CreateWorkflowJobTemplateNodeStep will be create a template node for a existing node
-func (jt *awx) createWorkflowJobTemplateNodeStep(id int, endpoint string, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
+// CreateWorkflowJobTemplateNodeStep will be created a template node for a existing node
+func (jt *workflowJobTemplateNodeStepServiceHTTP) createWorkflowJobTemplateNodeStep(id int, endpoint string, data map[string]interface{}, params map[string]string) (*WorkflowJobTemplateNode, error) {
 	workflowJobTemplateNodesActionEndpoint := fmt.Sprintf(endpoint, id)
 	return createWorkflowJobTemplateNode(jt.client, data, params, workflowJobTemplateNodesActionEndpoint)
 }

@@ -7,13 +7,18 @@ import (
 )
 
 type HostService interface {
-	GetHostByID(id int, params map[string]string) (*Host, error)
-	ListHosts(params map[string]string) ([]*Host, *ListHostsResponse, error)
-	CreateHost(data map[string]interface{}, params map[string]string) (*Host, error)
-	UpdateHost(id int, data map[string]interface{}, params map[string]string) (*Host, error)
+	List(params map[string]string) ([]*Host, *ResultsList[Host], error)
+	GetByID(id int, params map[string]string) (*Host, error)
+	Create(data map[string]interface{}, params map[string]string) (*Host, error)
+	Update(id int, data map[string]interface{}, params map[string]string) (*Host, error)
+	Delete(id int) (*Host, error)
 	AssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error)
 	DisAssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error)
-	DeleteHost(id int) (*Host, error)
+}
+
+type hostServiceHTTP struct {
+	AWXResourceService[Host]
+	client *Client
 }
 
 // AssociateGroup implement the awx group association request
@@ -30,93 +35,12 @@ type ListHostsResponse struct {
 
 const hostsAPIEndpoint = "/api/v2/hosts/"
 
-// GetHostByID shows the details of a awx inventroy sources.
-func (h *awx) GetHostByID(id int, params map[string]string) (*Host, error) {
-	result := new(Host)
-	endpoint := fmt.Sprintf("%s%d/", hostsAPIEndpoint, id)
-	resp, err := h.client.Requester.GetJSON(endpoint, result, params)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// ListHosts shows list of awx Hosts.
-func (h *awx) ListHosts(params map[string]string) ([]*Host, *ListHostsResponse, error) {
-	result := new(ListHostsResponse)
-	resp, err := h.client.Requester.GetJSON(hostsAPIEndpoint, result, params)
-	if err != nil {
-		return nil, result, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, result, err
-	}
-
-	return result.Results, result, nil
-}
-
-// CreateHost creates an awx Host.
-func (h *awx) CreateHost(data map[string]interface{}, params map[string]string) (*Host, error) {
-	mandatoryFields = []string{"name", "inventory"}
-	validate, status := ValidateParams(data, mandatoryFields)
-
-	if !status {
-		err := fmt.Errorf("Mandatory input arguments are absent: %s", validate)
-		return nil, err
-	}
-
-	result := new(Host)
-	payload, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add check if Host exists and return proper error
-
-	resp, err := h.client.Requester.PostJSON(hostsAPIEndpoint, bytes.NewReader(payload), result, params)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// UpdateHost update an awx Host
-func (h *awx) UpdateHost(id int, data map[string]interface{}, params map[string]string) (*Host, error) {
-	result := new(Host)
-	endpoint := fmt.Sprintf("%s%d", hostsAPIEndpoint, id)
-	payload, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := h.client.Requester.PatchJSON(endpoint, bytes.NewReader(payload), result, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
 // AssociateGroup update an awx Host
-func (h *awx) AssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error) {
+func (h *hostServiceHTTP) AssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error) {
 	result := new(Host)
 	endpoint := fmt.Sprintf("%s%d/groups/", hostsAPIEndpoint, id)
 	data["associate"] = true
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("Mandatory input arguments are absent: %s", validate)
@@ -139,11 +63,11 @@ func (h *awx) AssociateGroup(id int, data map[string]interface{}, params map[str
 }
 
 // DisAssociateGroup update an awx Host
-func (h *awx) DisAssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error) {
+func (h *hostServiceHTTP) DisAssociateGroup(id int, data map[string]interface{}, params map[string]string) (*Host, error) {
 	result := new(Host)
 	endpoint := fmt.Sprintf("%s%d/groups/", hostsAPIEndpoint, id)
 	data["disassociate"] = true
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("Mandatory input arguments are absent: %s", validate)
@@ -154,23 +78,6 @@ func (h *awx) DisAssociateGroup(id int, data map[string]interface{}, params map[
 		return nil, err
 	}
 	resp, err := h.client.Requester.PostJSON(endpoint, bytes.NewReader(payload), result, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := CheckResponse(resp); err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// DeleteHost delete an awx Host.
-func (h *awx) DeleteHost(id int) (*Host, error) {
-	result := new(Host)
-	endpoint := fmt.Sprintf("%s%d", hostsAPIEndpoint, id)
-
-	resp, err := h.client.Requester.Delete(endpoint, result, nil)
 	if err != nil {
 		return nil, err
 	}

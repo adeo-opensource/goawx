@@ -9,7 +9,7 @@ import (
 const workflowJobTemplateNotificationTemplatesAPIEndpoint = "/api/v2/workflow_job_templates/%d/notification_templates_%s/"
 
 // WorkflowJobTemplateNotificationTemplatesService implements awx job template nodes apis.
-type WorkflowJobTemplateNotificationTemplatesService interface {
+type WorkflowJobTemplateNotificationTemplateService interface {
 	AssociateWorkflowJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 	AssociateWorkflowJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 	AssociateWorkflowJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
@@ -20,14 +20,18 @@ type WorkflowJobTemplateNotificationTemplatesService interface {
 	DisassociateWorkflowJobTemplateNotificationTemplatesApprovals(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error)
 }
 
-func (s *awx) associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
+type workflowJobTemplateNotificationTemplateServiceHTTP struct {
+	client *Client
+}
+
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
 	result := new(NotificationTemplate)
 
 	data := map[string]interface{}{
 		"id": notificationTemplateID,
 	}
 
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("mandatory input arguments are absent: %s", validate)
@@ -53,33 +57,33 @@ func (s *awx) associateWorkflowJobTemplateNotificationTemplatesForType(jobTempla
 }
 
 // AssociateWorkflowJobTemplateNotificationTemplatesError will associate an error notification_template for a job_template
-func (s *awx) AssociateWorkflowJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) AssociateWorkflowJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "error")
 }
 
 // AssociateWorkflowJobTemplateNotificationTemplatesSuccess will associate a success notification_template for a job_template
-func (s *awx) AssociateWorkflowJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) AssociateWorkflowJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "success")
 }
 
 // AssociateWorkflowJobTemplateNotificationTemplatesStarted will associate a started notification_template for a job_template
-func (s *awx) AssociateWorkflowJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) AssociateWorkflowJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "started")
 }
 
 // AssociateWorkflowJobTemplateNotificationTemplatesApprovals will associate an approval notification_template for a job_template
-func (s *awx) AssociateWorkflowJobTemplateNotificationTemplatesApprovals(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) AssociateWorkflowJobTemplateNotificationTemplatesApprovals(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.associateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "approvals")
 }
 
-func (s *awx) disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID int, notificationTemplateID int, typ string) (*NotificationTemplate, error) {
 	result := new(NotificationTemplate)
 
 	data := map[string]interface{}{
 		"id":           notificationTemplateID,
 		"disassociate": true,
 	}
-	mandatoryFields = []string{"id"}
+	mandatoryFields := []string{"id"}
 	validate, status := ValidateParams(data, mandatoryFields)
 	if !status {
 		err := fmt.Errorf("mandatory input arguments are absent: %s", validate)
@@ -105,21 +109,21 @@ func (s *awx) disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTem
 }
 
 // DisassociateWorkflowJobTemplateNotificationTemplatesError will disassociate an error notification_template for a job_template
-func (s *awx) DisassociateWorkflowJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) DisassociateWorkflowJobTemplateNotificationTemplatesError(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "error")
 }
 
 // DisassociateWorkflowJobTemplateNotificationTemplatesSuccess will disassociate a success notification_template for a job_template
-func (s *awx) DisassociateWorkflowJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) DisassociateWorkflowJobTemplateNotificationTemplatesSuccess(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "success")
 }
 
 // DisassociateWorkflowJobTemplateNotificationTemplatesStarted will disassociate a started notification_template for a job_template
-func (s *awx) DisassociateWorkflowJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) DisassociateWorkflowJobTemplateNotificationTemplatesStarted(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "started")
 }
 
 // DisassociateWorkflowJobTemplateNotificationTemplatesApprovals will disassociate an approval notification_template for a job_template
-func (s *awx) DisassociateWorkflowJobTemplateNotificationTemplatesApprovals(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
+func (s *workflowJobTemplateNotificationTemplateServiceHTTP) DisassociateWorkflowJobTemplateNotificationTemplatesApprovals(jobTemplateID int, notificationTemplateID int) (*NotificationTemplate, error) {
 	return s.disassociateWorkflowJobTemplateNotificationTemplatesForType(jobTemplateID, notificationTemplateID, "approvals")
 }

@@ -5,15 +5,20 @@ import (
 )
 
 // ProjectUpdatesService implements awx projects apis.
-type ProjectUpdatesService interface {
+type ProjectUpdateService interface {
 	ProjectUpdateCancel(id int) (*ProjectUpdateCancel, error)
 	ProjectUpdateGet(id int) (*Job, error)
+}
+
+type projectUpdateServiceHTTP struct {
+	AWXResourceService[ExecutionEnvironment]
+	client *Client
 }
 
 const projectUpdatesAPIEndpoint = "/api/v2/project_updates/"
 
 // ProjectUpdateCancel cancel of awx projects update.
-func (p *awx) ProjectUpdateCancel(id int) (*ProjectUpdateCancel, error) {
+func (p *projectUpdateServiceHTTP) ProjectUpdateCancel(id int) (*ProjectUpdateCancel, error) {
 	result := new(ProjectUpdateCancel)
 	endpoint := fmt.Sprintf("%s%d/cancel", projectUpdatesAPIEndpoint, id)
 	resp, err := p.client.Requester.GetJSON(endpoint, result, nil)
@@ -28,7 +33,7 @@ func (p *awx) ProjectUpdateCancel(id int) (*ProjectUpdateCancel, error) {
 }
 
 // ProjectUpdateGet get of awx projects update.
-func (p *awx) ProjectUpdateGet(id int) (*Job, error) {
+func (p *projectUpdateServiceHTTP) ProjectUpdateGet(id int) (*Job, error) {
 	result := new(Job)
 	endpoint := fmt.Sprintf("%s%d", projectUpdatesAPIEndpoint, id)
 	resp, err := p.client.Requester.GetJSON(endpoint, result, nil)
