@@ -1,3 +1,5 @@
+## [1.0.1](https://github.com/adeo-opensource/goawx/compare/v1.0.0...v1.0.1) (2023-05-22)
+
 # 1.0.0 (2023-04-26)
 
 
