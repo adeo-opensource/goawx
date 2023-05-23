@@ -29,6 +29,11 @@ type teamServiceHTTP struct {
 	client *Client
 }
 
+type ListTeamsResponse struct {
+	Pagination
+	Results []*Team `json:"results"`
+}
+
 type ListTeamRolesResponse struct {
 	Pagination
 	Results []*ApplyRole `json:"results"`
